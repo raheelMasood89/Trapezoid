@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.rv.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rv.layoutManager = CenterZoomLayoutManager(this, CenterZoomLayoutManager.HORIZONTAL, false)
         adapter = PopularListAdapter(PopularListAdapter.PopularListClickListener { movieID ->
         })
         adapter.submitList(mData.toMutableList())

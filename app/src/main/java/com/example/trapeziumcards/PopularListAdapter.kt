@@ -1,9 +1,11 @@
 package com.example.trapeziumcards
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +14,9 @@ import com.example.trapeziumcards.databinding.ItemBinding
 
 class PopularListAdapter(private val clickListener: PopularListClickListener) :
     ListAdapter<Result, PopularListAdapter.MovieListViewHolder>(Companion) {
+
+    private var lastPosition = -1
+    private var context: Context? = null
 
     inner class MovieListViewHolder(val binding: ItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -25,6 +30,7 @@ class PopularListAdapter(private val clickListener: PopularListClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListViewHolder {
+        context = parent.context
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemBinding.inflate(layoutInflater, parent, false)
         return MovieListViewHolder(binding)
@@ -34,7 +40,7 @@ class PopularListAdapter(private val clickListener: PopularListClickListener) :
         val currentUser = getItem(position)
         holder.binding.executePendingBindings()
         // Set the view to fade in
-        setFadeAnimation(holder.itemView);
+//        setFadeAnimation(holder.itemView);
     }
 
     private fun setFadeAnimation(view: View) {
@@ -45,5 +51,23 @@ class PopularListAdapter(private val clickListener: PopularListClickListener) :
 
     class PopularListClickListener(val clickListener: (mMovieId: String) -> Unit) {
         fun onClick(mMovieId: String) = clickListener(mMovieId)
+    }
+
+    private fun setFadeAnimation(view: View, position: Int) {
+        val anim = if (position > lastPosition) R.anim.rotate_amin else R.anim.rotate_exit
+        val rotate = AnimationUtils.loadAnimation(context, anim)
+        view.startAnimation(rotate)
+        lastPosition = position - 1
+    }
+
+    override fun onViewDetachedFromWindow(holder: MovieListViewHolder) {
+//        holder.itemView.clearAnimation()
+        super.onViewDetachedFromWindow(holder)
+    }
+
+
+    override fun onViewAttachedToWindow(holder: MovieListViewHolder) {
+//        setFadeAnimation(holder.itemView, holder.layoutPosition)
+        super.onViewAttachedToWindow(holder)
     }
 }
